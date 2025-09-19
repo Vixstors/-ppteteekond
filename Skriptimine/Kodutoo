@@ -1,1 +1,49 @@
+import random      # juhuslike arvude loomiseks
+import datetime    # kuupäeva ja kellaaja saamiseks
 
+# Loob funktsiooni mis arvutab summa, keskmise ja suurima arvu
+def arvuta(arvud):
+    """
+    Funktsioon saab sisendiks arvude nimekirja ja tagastab:
+    - summa: kõik arvud kokku liidetuna
+    - keskmine: arvude keskmine (ümardatud 2 komakohani)
+    - suurim: kõige suurem arv nimekirjas
+    """
+    summa = sum(arvud) # sum() liidab kõik arvud kokku
+    keskmine = round(summa / len(arvud), 2)   # jagame summa arvude arvuga ja ümardame
+    suurim = max(arvud)     # max() leiab suurima arvu
+    return summa, keskmine, suurim  # tagastame kolm tulemust
+
+#Genereerib 20 juhuslikku täisarvu vahemikus 1 kuni 100
+arvud = []  # loome tühja nimekirja arvude jaoks
+for i in range(20):  # kordame 20 korda
+    juhuarv = random.randint(1, 100) # loome ühe juhusliku arvu vahemikus 1–100
+    arvud.append(juhuarv)   # lisab selle arvu nimekirja
+
+# Saab tänase kuupäeva ja kellaaja
+praegu = datetime.datetime.now() # võtab praeguse kuupäeva ja kellaaja
+kuupäev = praegu.strftime("%d.%m.%Y %H:%M:%S") # muudame kuupäeva ilusaks tekstiks
+
+#Kirjutab kuupäeva ja arvud faili nimega "andmed.txt"
+with open("andmed.txt", "w") as fail: # avame faili kirjutamiseks ("w" tähendab write)
+    fail.write("Kuupäev: " + kuupäev + "\n")  # kirjutame faili esimesele reale kuupäeva
+    fail.write("Arvud: ")  # alustame teist rida tekstiga "Arvud: "
+    for arv in arvud:  # käime läbi kõik arvud
+        fail.write(str(arv) + " ")  # kirjutame iga arvu ja lisame tühiku
+    fail.write("\n")  # lisame rea lõppu reavahetuse
+
+# Loeb arvud failist uuesti sisse
+with open("andmed.txt", "r") as fail: # avab faili lugemiseks ("r" tähendab read)
+    read = fail.readlines()  # loeb kõik read nimekirjana
+    arvude_rida = read[1]  # võtab teise rea, kus on arvud
+    arvude_tekst = arvude_rida.replace("Arvud: ", "")  # eemaldab alguse "Arvud: "
+    arvud_failist = arvude_tekst.split() # jagab teksti tühikute järgi eraldi arvudeks
+    arvud_failist = [int(arv) for arv in arvud_failist]  # muudab tekstilised arvud täisarvudeks
+
+summa, keskmine, suurim = arvuta(arvud_failist) # annab arvud funktsioonile ja saame tulemused
+
+# Kuvame tulemused ekraanile
+print("Failist loetud arvud:", arvud_failist)  # näitab millised arvud failist loeti
+print("Summa:", summa)         # näitab arvude summat
+print("Keskmine:", keskmine)    # näitab arvude keskmist
+print("Suurim arv:", suurim)     # näitab suurimat arvu
